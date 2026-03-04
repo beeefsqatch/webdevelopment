@@ -1,6 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+
+        /*  Page Fade In */
+        body {
+            opacity: 0;
+            animation: fadeIn 1.2s ease forwards;
+            font-family: Arial, sans-serif;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* 🎨 Animated Headings */
+        h1, h2, h3, h4, h5, h6 {
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        h1:hover,
+        h2:hover,
+        h3:hover,
+        h4:hover,
+        h5:hover,
+        h6:hover {
+            transform: scale(1.05);
+            color: dodgerblue;
+        }
+
+        /*  Link Glow Effect */
+        a {
+            text-decoration: none;
+            color: royalblue;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            color: hotpink;
+            text-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+        }
+
+        /* List Animation */
+        ol li {
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        ol li:hover {
+            transform: translateX(10px);
+            color: purple;
+        }
+
+        /*  Table Animation */
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        td, th {
+            padding: 10px 20px;
+            border: 1px solid black;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        tr:hover td {
+            background: lightblue;
+            transform: scale(1.02);
+        }
+
+        /* Image Hover Reveal */
+        .Photo-op {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .location:hover .Photo-op {
+            display: block;
+            animation: slideUp 0.5s ease forwards;
+        }
+
+        @keyframes slideUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .location {
+            color: blue;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .location:hover {
+            transform: rotate(-2deg) scale(1.1);
+        }
+
+    </style>
     <meta charset="UTF-8">
     <title>Hello</title>
 </head>
