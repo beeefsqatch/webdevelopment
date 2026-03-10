@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Browser Metroidvania</title>
+
+    <style>
+
+        body{
+            margin:0;
+            background:black;
+            overflow:hidden;
+        }
+
+        canvas{
+            display:block;
+            margin:auto;
+            background:#0b0b15;
+            image-rendering:pixelated;
+        }
+
+        #ui{
+            position:absolute;
+            top:10px;
+            left:10px;
+            color:white;
+            font-family:monospace;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<canvas id="game" width="960" height="540"></canvas>
+
+<div id="ui"></div>
+
+<script src="sprites.js"></script>
+<script src="player.js"></script>
+<script src="enemies.js"></script>
+<script src="bosses.js"></script>
+<script src="items.js"></script>
+<script src="World.js"></script>
+<script src="map.js"></script>
+<script src="save.js"></script>
+<script src="Game.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<H1>MADLIBS</H1>
+<div id="entry">
+    <h2>My test page</h2>
+    <p>adjective: <input type="text">
+    <p>animal:<input type="text"></p>
+    <p>noun:<input type="text"></p>
+    <p>adjective: <input type="text">
+    <p>animal: <input type="text">
+    <p>noun: <input type="text">
+    <p>verb: <input type="text">
+    <p>place: <input type="text">
+    <p>adjective: <input type="text">
+    <p>food: <input type="text">
+    <p>verb: <input type="text">
+    <p>adjective: <input type="text">
+    <p>place: <input type="text">
+
+    <button onclick="madlibs()">Submit</button>
+
+</div>
+
+<div id="results">
+    <h2>Results</h2>
+</div>
+<p>
+    Yesterday I went to the <span>(adjective)</span> zoo and saw a <span>(animal)</span> dancing on a <span>(noun)</span>.
+
+
+
+    Suddenly, a <span>(adjective)</span> <span>(animal)</span> ran past me while carrying a <span>(noun)</span>.
+
+
+
+    I decided to <span>(verb)</span> as fast as I could toward the <span>(place)</span>.
+
+
+
+    On the way, I slipped on a <span>(adjective)</span> <span>(food)</span> and started to <span>(verb)</span> loudly.
+
+
+
+    By the end of the day, everyone said it was the most <span>(adjective)</span> adventure in <span>(place)</span>.
+</p>
+</body>
+<script>
+    function madlibs() {
+        let adj1_input= document .getElementById("adj1_input").innerHTML = adj1_input.value;
+        console.log(adj1_input);
+        console.log(adj1_input.value);
+    }
+</script>
+</html>
