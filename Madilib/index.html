@@ -2,58 +2,105 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Mad Libs</title>
 </head>
+
 <body>
-<H1>MADLIBS</H1>
+
+<h1>MADLIBS</h1>
+
 <div id="entry">
-    <h2>My test page</h2>
-    <p>adjective: <input type="text">
-    <p>animal:<input type="text"></p>
-    <p>noun:<input type="text"></p>
-    <p>adjective: <input type="text">
-    <p>animal: <input type="text">
-    <p>noun: <input type="text">
-    <p>verb: <input type="text">
-    <p>place: <input type="text">
-    <p>adjective: <input type="text">
-    <p>food: <input type="text">
-    <p>verb: <input type="text">
-    <p>adjective: <input type="text">
-    <p>place: <input type="text">
+    <h2>My Test Page</h2>
+
+    <p>Adjective: <input type="text" id="adj1"></p>
+    <p>Animal: <input type="text" id="animal1"></p>
+    <p>Noun: <input type="text" id="noun1"></p>
+
+    <p>Adjective: <input type="text" id="adj2"></p>
+    <p>Animal: <input type="text" id="animal2"></p>
+    <p>Noun: <input type="text" id="noun2"></p>
+
+    <p>Verb: <input type="text" id="verb1"></p>
+    <p>Place: <input type="text" id="place1"></p>
+
+    <p>Adjective: <input type="text" id="adj3"></p>
+    <p>Food: <input type="text" id="food"></p>
+
+    <p>Verb: <input type="text" id="verb2"></p>
+    <p>Adjective: <input type="text" id="adj4"></p>
+    <p>Place: <input type="text" id="place2"></p>
 
     <button onclick="madlibs()">Submit</button>
-
 </div>
 
 <div id="results">
     <h2>Results</h2>
+
+    <p>
+        Yesterday I went to the <span id="r_adj1">(adjective)</span> zoo and saw a
+        <span id="r_animal1">(animal)</span> dancing on a <span id="r_noun1">(noun)</span>.
+
+        Suddenly, a <span id="r_adj2">(adjective)</span> <span id="r_animal2">(animal)</span>
+        ran past me while carrying a <span id="r_noun2">(noun)</span>.
+
+        I decided to <span id="r_verb1">(verb)</span> as fast as I could toward the
+        <span id="r_place1">(place)</span>.
+
+        On the way, I slipped on a <span id="r_adj3">(adjective)</span>
+        <span id="r_food">(food)</span> and started to <span id="r_verb2">(verb)</span> loudly.
+
+        By the end of the day, everyone said it was the most
+        <span id="r_adj4">(adjective)</span> adventure in <span id="r_place2">(place)</span>.
+    </p>
+
 </div>
-<p>
-    Yesterday I went to the <span>(adjective)</span> zoo and saw a <span>(animal)</span> dancing on a <span>(noun)</span>.
 
-
-
-    Suddenly, a <span>(adjective)</span> <span>(animal)</span> ran past me while carrying a <span>(noun)</span>.
-
-
-
-    I decided to <span>(verb)</span> as fast as I could toward the <span>(place)</span>.
-
-
-
-    On the way, I slipped on a <span>(adjective)</span> <span>(food)</span> and started to <span>(verb)</span> loudly.
-
-
-
-    By the end of the day, everyone said it was the most <span>(adjective)</span> adventure in <span>(place)</span>.
-</p>
-</body>
 <script>
+
     function madlibs() {
-        let adj1_input= document .getElementById("adj1_input").innerHTML = adj1_input.value;
-        console.log(adj1_input);
-        console.log(adj1_input.value);
+
+        document.getElementById("r_adj1").innerHTML =
+            document.getElementById("adj1").value;
+
+        document.getElementById("r_animal1").innerHTML =
+            document.getElementById("animal1").value;
+
+        document.getElementById("r_noun1").innerHTML =
+            document.getElementById("noun1").value;
+
+        document.getElementById("r_adj2").innerHTML =
+            document.getElementById("adj2").value;
+
+        document.getElementById("r_animal2").innerHTML =
+            document.getElementById("animal2").value;
+
+        document.getElementById("r_noun2").innerHTML =
+            document.getElementById("noun2").value;
+
+        document.getElementById("r_verb1").innerHTML =
+            document.getElementById("verb1").value;
+
+        document.getElementById("r_place1").innerHTML =
+            document.getElementById("place1").value;
+
+        document.getElementById("r_adj3").innerHTML =
+            document.getElementById("adj3").value;
+
+        document.getElementById("r_food").innerHTML =
+            document.getElementById("food").value;
+
+        document.getElementById("r_verb2").innerHTML =
+            document.getElementById("verb2").value;
+
+        document.getElementById("r_adj4").innerHTML =
+            document.getElementById("adj4").value;
+
+        document.getElementById("r_place2").innerHTML =
+            document.getElementById("place2").value;
+
     }
+
 </script>
+
+</body>
 </html>
