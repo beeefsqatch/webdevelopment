@@ -3,6 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Mad Libs</title>
+
+    <style>
+        #results{
+            display:none;
+        }
+    </style>
+
 </head>
 
 <body>
@@ -98,6 +105,8 @@
         document.getElementById("r_place2").innerHTML =
             document.getElementById("place2").value;
 
+        // SHOW the madlib text after clicking submit
+        document.getElementById("results").style.display = "block";
     }
 
 </script>
