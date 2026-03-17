@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Notes</title>
+
+</head>
+
+<body>
+
+<div class="app">
+
+  <nav>
+    <a href="index.html">Tasks</a>
+    <a href="notes.html">Notes</a>
+  </nav>
+
+  <h1>Notes</h1>
+
+  <textarea id="notes"></textarea>
+  <button onclick="saveNotes()">Save</button>
+
+</div>
+
+<script>
+
+  const notesBox = document.getElementById("notes")
+
+  notesBox.value = localStorage.getItem("notes") || ""
+
+  function saveNotes(){
+    localStorage.setItem("notes",notesBox.value)
+    alert("Notes saved!")
+  }
+
+</script>
+
+</body>
+</html>
