@@ -5,17 +5,23 @@
     <title>To Do</title>
 </head>
 <body>
+
 <h1>Luke's To-Do List</h1>
+
+<h1 id="total_time" style="color:red; font-size:50px;">Total Time: 0 min</h1>
+
 <h2>Add a task</h2>
-<label for="task">Task Name: </label><input id="task" type="text" placeholder="task name...">
+<label>Task Name: </label>
+<input id="task" type="text" placeholder="task name...">
+
+<label>Time (min): </label>
+<input id="time" type="number" placeholder="minutes..." min="0">
+
 <button id="add" onclick="new_task()">Add</button>
 
 <h2>Tasks</h2>
-<div id="task_list">
-    <!--    </span><div class="task"><input type="checkbox"><span class="task_name">Task 1</span></div>-->
-    <!--    </span><div class="task"><input type="checkbox"><span class="task_name">Task 2</span></div>-->
-    <!--    </span><div class="task"><input type="checkbox"><span class="task_name">Task 3</span></div>-->
-</div>
+<div id="task_list"></div>
+
 </body>
 
 <style>
@@ -56,95 +62,73 @@
 </style>
 
 <script>
-    function setCookie(cname, cvalue, exdays) {
-        const d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        let expires = "expires="+ d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-    }
-
-    function getCookie(cname) {
-        let name = cname + "=";
-        let decodedCookie = decodeURIComponent(document.cookie);
-        let ca = decodedCookie.split(';');
-        for(let i = 0; i <ca.length; i++) {
-            let c = ca[i];
-            while (c.charAt(0) == ' ') {
-                c = c.substring(1);
-            }
-            if (c.indexOf(name) == 0) {
-                return c.substring(name.length, c.length);
-            }
-        }
-        return "";
-    }
-
-
-
     function new_task() {
         let task_input = document.getElementById('task');
-        let task_name = task_input.value;
-        if (task_name == "") {
-            return false;
+        let time_input = document.getElementById('time');
+
+        let task_name = task_input.value.trim();
+        let task_time = parseInt(time_input.value);
+
+        if (task_name === "" || isNaN(task_time)) {
+            return;
         }
-        console.log(task_name);
-        setCookie("task", getCookie("task") + "|" + task_name, 15);
-        add_task(task_name);
+
+        add_task(task_name, task_time);
 
         task_input.value = "";
+        time_input.value = "";
         task_input.focus();
+
+        update_total_time();
     }
 
-    function add_task(task_name) {
+    // ENTER key adds task
+    document.getElementById("task").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            new_task();
+        }
+    });
+
+    function add_task(task_name, task_time) {
         let new_div = document.createElement("div");
         new_div.className = "task";
+        new_div.setAttribute("data-time", task_time);
+
         document.getElementById("task_list").appendChild(new_div);
 
         let checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.addEventListener("change", update_total_time);
         new_div.appendChild(checkbox);
 
         let new_span = document.createElement("span");
-        new_span.setAttribute("class", "task_name");
-        new_span.innerText = task_name;
+        new_span.className = "task_name";
+        new_span.innerText = `${task_name} (${task_time} min)`;
         new_div.appendChild(new_span);
 
         let trash = document.createElement("span");
-        trash.className = "trash";
         trash.innerText = "🗑️";
         trash.style.float = "right";
-        trash.addEventListener("click", delete_task)
+        trash.style.cursor = "pointer";
+        trash.addEventListener("click", function(e){
+            e.target.parentElement.remove();
+            update_total_time();
+        });
         new_div.appendChild(trash);
-
     }
 
-    function delete_task(e){
-        e.target.parentElement.remove()
+    function update_total_time() {
+        let tasks = document.querySelectorAll(".task");
+        let total = 0;
+
+        tasks.forEach(task => {
+            let checkbox = task.querySelector("input[type='checkbox']");
+            if (!checkbox.checked) {
+                total += parseInt(task.getAttribute("data-time"));
+            }
+        });
+
+        document.getElementById("total_time").innerText = `Total Time: ${total} min`;
     }
-
-
-    let current_cookie = getCookie("task");
-    console.log(current_cookie);
-    current_cookie = current_cookie.split("|")
-    console.log(current_cookie);
-    // console.log(current_cookie.length);
-    // console.log(current_cookie[1]);
-    // current_cookie[1] = current_cookie[1].toUpperCase();
-    // console.log(current_cookie[1]);
-    // console.log(current_cookie);
-
-    // console.log(current_cookie[0]);
-    // console.log(current_cookie[1]);
-    // console.log(current_cookie[2]);
-    // console.log(current_cookie[3]);
-    // console.log(current_cookie[4]);
-    // console.log(current_cookie[5]);
-
-    for(let i = 0; i < current_cookie.length; i = i + 1){
-        console.log(current_cookie[i]);
-        add_task(current_cookie[i]);
-    }
-
-
 </script>
 </html>
