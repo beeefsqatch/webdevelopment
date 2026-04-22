@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Luke Birthday Countdown</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: yellowgreen;
+            color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        .countdown {
+            font-size: 1.5rem;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>YOUR TAX RETURNS (and also my birthday present!) ARE DUE IN...</h1>
+    <div class="countdown">
+        <div class="box"><div id="months" class="number">0</div><div class="label">Months</div></div>
+        <div class="box"><div id="days" class="number">0</div><div class="label">Days</div></div>
+        <div class="box"><div id="hours" class="number">0</div><div class="label">Hours</div></div>
+        <div class="box"><div id="minutes" class="number">0</div><div class="label">Minutes</div></div>
+        <div class="box"><div id="seconds" class="number">0</div><div class="label">Seconds</div></div>
+    </div>
+</div>
+
+<script>
+    function getNextApril15() {
+        const now = new Date();
+        let year = now.getFullYear();
+        let target = new Date(year, 3, 15); // April = month 3 (0-based)
+
+        if (now > target) {
+            target = new Date(year + 1, 3, 15);
+        }
+
+        return target;
+    }
+
+    function updateCountdown() {
+        const now = new Date();
+        const target = getNextApril15();
+
+        let totalSeconds = Math.floor((target - now) / 1000);
+
+        const seconds = totalSeconds % 60;
+        totalSeconds = Math.floor(totalSeconds / 60);
+
+        const minutes = totalSeconds % 60;
+        totalSeconds = Math.floor(totalSeconds / 60);
+
+        const hours = totalSeconds % 24;
+        totalSeconds = Math.floor(totalSeconds / 24);
+
+        const days = totalSeconds % 30;
+        const months = Math.floor(totalSeconds / 30);
+
+        document.getElementById("months").textContent = months;
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours;
+        document.getElementById("minutes").textContent = minutes;
+        document.getElementById("seconds").textContent = seconds;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+</script>
+</body>
+</html>
