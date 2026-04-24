@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube Cipher</title>
+</head>
+<body>
+<h1>YouTube Cipher</h1>
+
+<p>
+    <label for="ytLink">Enter YouTube Link: </label>
+    <input type="text" id="ytLink" placeholder="https://www.youtube.com/watch?v=...">
+</p>
+
+<p>
+    <label for="plaintext">Enter your message: </label>
+    <input type="text" id="plaintext" value="hello">
+</p>
+
+<p>
+    <button onclick="encode()">Encode</button>
+    <button onclick="decode()">Decode</button>
+</p>
+
+<p><strong>Generated Key:</strong> <span id="keyDisplay"></span></p>
+
+<p><strong>Output:</strong></p>
+<p id="ciphertext"></p>
+
+<div id="videoBox"></div>
+
+<script>
+    function extractVideoID(url) {
+        let match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        return match ? match[1] : null;
+    }
+
+    function generateKey(videoID) {
+        let key = 0;
+        for (let i = 0; i < videoID.length; i++) {
+            key += videoID.charCodeAt(i);
+        }
+        return key;
+    }
+
+    function processText(key, text, direction) {
+        let chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890.,?!: ";
+        let result = "";
+
+        for (let i = 0; i < text.length; i++) {
+            let charLocation = chars.indexOf(text[i]);
+
+            if (charLocation === -1) {
+                result += text[i];
+                continue;
+            }
+
+            let newCharLocation;
+
+            if (direction === "encode") {
+                newCharLocation = (charLocation + key) % chars.length;
+            } else {
+                newCharLocation = (charLocation - key) % chars.length;
+            }
+
+            while (newCharLocation < 0) {
+                newCharLocation += chars.length;
+            }
+
+            result += chars[newCharLocation];
+        }
+
+        return result;
+    }
+
+    function encode() {
+        let link = document.getElementById("ytLink").value;
+        let videoID = extractVideoID(link);
+
+        if (!videoID) {
+            alert("Invalid YouTube link");
+            return;
+        }
+
+        let key = generateKey(videoID);
+        document.getElementById("keyDisplay").innerText = key;
+
+        let plaintext = document.getElementById("plaintext").value.toUpperCase();
+
+        let ciphertext = processText(key, plaintext, "encode");
+
+        document.getElementById("ciphertext").innerText = ciphertext;
+
+        embedVideo(videoID);
+    }
+
+    function decode() {
+        let link = document.getElementById("ytLink").value;
+        let videoID = extractVideoID(link);
+
+        if (!videoID) {
+            alert("Invalid YouTube link");
+            return;
+        }
+
+        let key = generateKey(videoID);
+        document.getElementById("keyDisplay").innerText = key;
+
+        let ciphertext = document.getElementById("plaintext").value.toUpperCase();
+
+        let decoded = processText(key, ciphertext, "decode");
+
+        document.getElementById("ciphertext").innerText = decoded;
+
+        embedVideo(videoID);
+    }
+
+    function embedVideo(videoID) {
+        let box = document.getElementById("videoBox");
+        box.innerHTML = `
+        <h3>Video Key:</h3>
+        <iframe width="560" height="315"
+            src="https://www.youtube.com/embed/${videoID}"
+            frameborder="0"
+            allowfullscreen>
+        </iframe>
+    `;
+    }
+</script>
+
+</body>
+</html>
