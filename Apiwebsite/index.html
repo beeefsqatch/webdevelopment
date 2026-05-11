@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NOAA Fish API</title>
+
+
+</head>
+
+<body>
+
+<h1>NOAA Fish API</h1>
+
+<div>
+    <input
+            type="text"
+            id="fish"
+            placeholder="Enter fish name..."
+            value="salmon"
+    >
+
+    <button onclick="getFish()">
+        Search Fish
+    </button>
+</div>
+
+<div id="fish-result">
+
+    <h2 id="species-name"></h2>
+
+    <img id="fish-image" src="" alt="Fish Image">
+
+    <p>
+        <strong>Scientific Name:</strong>
+        <span id="scientific-name"></span>
+    </p>
+
+    <p>
+        <strong>Habitat:</strong>
+        <span id="habitat"></span>
+    </p>
+
+    <p>
+        <strong>Population:</strong>
+        <span id="population"></span>
+    </p>
+
+</div>
+
+<script>
+
+    function getFish() {
+
+        let fishName =
+            document.getElementById("fish").value;
+
+        let url =
+            "https://www.fishwatch.gov/api/species";
+
+        fetch(url)
+
+            .then(function(response) {
+
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+
+                return response.json();
+
+            })
+
+            .then(function(data) {
+
+                console.log(data);
+
+                let fish = data.find(item =>
+
+                    item["Species Name"]
+                        ?.toLowerCase()
+                        .includes(fishName.toLowerCase())
+
+                );
+
+                if (!fish) {
+
+                    alert("Fish not found!");
+
+                    return;
+                }
+
+                document.getElementById("species-name").innerHTML =
+                    fish["Species Name"];
+
+                document.getElementById("scientific-name").innerHTML =
+                    fish["Scientific Name"] || "Unknown";
+
+                document.getElementById("habitat").innerHTML =
+                    fish["Habitat"] || "No habitat data";
+
+                document.getElementById("population").innerHTML =
+                    fish["Population"] || "No population data";
+
+                // Fish image from NOAA API
+                let imageUrl =
+                    fish["Species Illustration Photo"]?.src;
+
+                document.getElementById("fish-image").src =
+                    imageUrl;
+
+                document.getElementById("fish-image").alt =
+                    fish["Species Name"];
+
+                document.getElementById("fish-result").style.display =
+                    "block";
+
+            })
+
+            .catch(function(error) {
+
+                console.error("Fetch error:", error);
+
+                alert("Error fetching fish data");
+
+            });
+
+    }
+
+</script>
+
+</body>
+</html>
