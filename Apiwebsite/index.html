@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>NOAA Fish API</title>
+    <title>Fish Finder</title>
 
 
 </head>
 
 <body>
 
-<h1>NOAA Fish API</h1>
+<h1>NOAA Fish Finder</h1>
 
-<div>
-    <input
-            type="text"
-            id="fish"
-            placeholder="Enter fish name..."
-            value="salmon"
-    >
+<input
+        type="text"
+        id="fishInput"
+        placeholder="Enter fish name"
+        value="salmon"
+>
 
-    <button onclick="getFish()">
-        Search Fish
-    </button>
-</div>
+<button onclick="getFish()">
+    Search
+</button>
 
-<div id="fish-result">
+<div id="result">
 
-    <h2 id="species-name"></h2>
-
-    <img id="fish-image" src="" alt="Fish Image">
+    <h2 id="fishName"></h2>
 
     <p>
         <strong>Scientific Name:</strong>
-        <span id="scientific-name"></span>
+        <span id="scientific"></span>
     </p>
 
     <p>
@@ -40,88 +37,78 @@
         <span id="habitat"></span>
     </p>
 
-    <p>
-        <strong>Population:</strong>
-        <span id="population"></span>
-    </p>
+    <img id="fishImage" src="" alt="Fish Image">
 
 </div>
 
 <script>
 
-    function getFish() {
+    async function getFish() {
 
-        let fishName =
-            document.getElementById("fish").value;
+        let fishSearch =
+            document.getElementById("fishInput").value.toLowerCase();
 
-        let url =
-            "https://www.fishwatch.gov/api/species";
+        try {
 
-        fetch(url)
+            let response = await fetch(
+                "https://www.fishwatch.gov/api/species"
+            );
 
-            .then(function(response) {
+            let data = await response.json();
 
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
+            console.log(data);
 
-                return response.json();
+            let fish = data.find(item => {
 
-            })
-
-            .then(function(data) {
-
-                console.log(data);
-
-                let fish = data.find(item =>
-
+                return item["Species Name"] &&
                     item["Species Name"]
-                        ?.toLowerCase()
-                        .includes(fishName.toLowerCase())
-
-                );
-
-                if (!fish) {
-
-                    alert("Fish not found!");
-
-                    return;
-                }
-
-                document.getElementById("species-name").innerHTML =
-                    fish["Species Name"];
-
-                document.getElementById("scientific-name").innerHTML =
-                    fish["Scientific Name"] || "Unknown";
-
-                document.getElementById("habitat").innerHTML =
-                    fish["Habitat"] || "No habitat data";
-
-                document.getElementById("population").innerHTML =
-                    fish["Population"] || "No population data";
-
-                // Fish image from NOAA API
-                let imageUrl =
-                    fish["Species Illustration Photo"]?.src;
-
-                document.getElementById("fish-image").src =
-                    imageUrl;
-
-                document.getElementById("fish-image").alt =
-                    fish["Species Name"];
-
-                document.getElementById("fish-result").style.display =
-                    "block";
-
-            })
-
-            .catch(function(error) {
-
-                console.error("Fetch error:", error);
-
-                alert("Error fetching fish data");
+                        .toLowerCase()
+                        .includes(fishSearch);
 
             });
+
+            if (!fish) {
+
+                alert("Fish not found");
+
+                return;
+            }
+
+            document.getElementById("fishName").innerHTML =
+                fish["Species Name"];
+
+            document.getElementById("scientific").innerHTML =
+                fish["Scientific Name"] || "Unknown";
+
+            document.getElementById("habitat").innerHTML =
+                fish["Habitat"] || "No habitat data";
+
+            let image = "";
+
+            if (
+                fish["Species Illustration Photo"] &&
+                fish["Species Illustration Photo"].src
+            ) {
+
+                image =
+                    fish["Species Illustration Photo"].src;
+
+            }
+
+            document.getElementById("fishImage").src = image;
+
+            document.getElementById("result").style.display =
+                "block";
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+            alert("Error loading fish data");
+
+        }
 
     }
 

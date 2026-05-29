@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Monster Battle Simulator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #1f2430;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .game {
+            width: 900px;
+            background: #2b3245;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+        }
+
+        .battlefield {
+            position: relative;
+            height: 420px;
+            background: linear-gradient(to bottom, #5ea85e 0%, #76c776 60%, #4b914b 100%);
+            padding: 30px;
+        }
+
+        .enemy,
+        .player {
+            position: absolute;
+            width: 260px;
+        }
+
+        .enemy {
+            top: 40px;
+            right: 60px;
+        }
+
+        .player {
+            bottom: 40px;
+            left: 60px;
+        }
+
+        .monster {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 70px;
+            font-weight: bold;
+            color: white;
+            margin: auto;
+            transition: transform 0.25s;
+        }
+
+        .enemy .monster {
+            background: #c94b4b;
+        }
+
+        .player .monster {
+            background: #4b7cc9;
+        }
+
+        .info-box {
+            background: rgba(0,0,0,0.55);
+
+        }
+
+        .name-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 18px;
+            background: #444;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .hp-fill {
+            height: 100%;
+            width: 100%;
+            background: #4cd964;
+            transition: width 0.4s;
+        }
+
+        .controls {
+            background: #202635;
+
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        button {
+
+            border: none;
+
+            font-size: 16px;
+            background: #3f6ed8;
+            color: white;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5a86eb;
+        }
+
+        button:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        .log {
+            margin-top: 16px;
+            background: #141922;
+            padding: 14px;
+            border-radius: 10px;
+            min-height: 70px;
+            line-height: 1.5;
+        }
+
+        .shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="game">
+
+    <div class="battlefield">
+
+        <div class="enemy">
+            <div class="info-box">
+                <div class="name-row">
+                    <span>Yardzar</span>
+                    <span id="enemyHpText">100 / 100</span>
+                </div>
+
+                <div class="hp-bar">
+                    <div class="hp-fill" id="enemyHpBar"></div>
+                </div>
+            </div>
+
+            <div class="monster" id="enemyMonster">I</div>
+        </div>
+
+        <div class="player">
+            <div class="info-box">
+                <div class="name-row">
+                    <span>Blastmoist</span>
+                    <span id="playerHpText">100 / 100</span>
+                </div>
+
+                <div class="hp-bar">
+                    <div class="hp-fill" id="playerHpBar"></div>
+                </div>
+            </div>
+
+            <div class="monster" id="playerMonster">A</div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <h2>Choose an attack</h2>
+
+        <div class="buttons">
+            <button onclick="playerAttack('Slash', 18)">Slash</button>
+            <button onclick="playerAttack('Fireball', 24)">Fireball</button>
+            <button onclick="playerAttack('Thunder', 30)">Thunder</button>
+            <button onclick="healPlayer()">Heal</button>
+        </div>
+
+        <div class="log" id="log">
+            Battle started.
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const player = {
+        name: "Blastmoist",
+        type: "Water",
+        hp: 100,
+        maxHp: 100
+    };
+
+    const enemy = {
+        name: "Infernot",
+        type: "Fire",
+        hp: 100,
+        maxHp: 100
+    };
+
+    const log = document.getElementById("log");
+
+    const typeChart = {
+        Fire: {
+            Grass: 2,
+            Water: 0.5,
+            Fire: 0.5
+        },
+
+        Water: {
+            Fire: 2,
+            Grass: 0.5,
+            Water: 0.5
+        },
+
+        Grass: {
+            Water: 2,
+            Fire: 0.5,
+            Grass: 0.5
+        },
+
+        Electric: {
+            Water: 2,
+            Grass: 0.5,
+            Electric: 0.5
+        },
+
+        Normal: {}
+    };
+
+    const playerMoves = [
+        {
+            name: "Slash",
+            type: "Normal",
+            power: 18
+        },
+
+        {
+            name: "Water Cannon",
+            type: "Water",
+            power: 24
+        },
+
+        {
+            name: "Thunder",
+            type: "Electric",
+            power: 30
+        },
+
+        {
+            name: "Leaf Blade",
+            type: "Grass",
+            power: 26
+        }
+    ];
+
+    function getEffectiveness(moveType, targetType) {
+        if (
+            typeChart[moveType] &&
+            typeChart[moveType][targetType]
+        ) {
+            return typeChart[moveType][targetType];
+        }
+
+        return 1;
+    }
+
+    function playerAttack(moveIndex) {
+        if (player.hp <= 0 || enemy.hp <= 0) return;
+
+        const move = playerMoves[moveIndex];
+
+        let damage =
+            move.power + randomInt(-5, 5);
+
+        const effectiveness =
+            getEffectiveness(move.type, enemy.type);
+
+        damage = Math.floor(damage * effectiveness);
+
+        enemy.hp -= damage;
+
+        if (enemy.hp < 0) {
+            enemy.hp = 0;
+        }
+
+        animateHit("enemyMonster");
+
+        let message =
+            `${player.name} used <b>${move.name}</b> (${move.type}) and dealt ${damage} damage.`;
+
+        if (effectiveness > 1) {
+            message += "<br><b>It's super effective.</b>";
+        }
+
+        if (effectiveness < 1) {
+            message += "<br><b>It's not very effective.</b>";
+        }
+
+        log.innerHTML = message;
+
+        updateUI();
+
+        if (enemy.hp <= 0) {
+            endGame("You won the battle.");
+            return;
+        }
+
+        setTimeout(enemyTurn, 900);
+    }
+
+    function enemyTurn() {
+        const enemyMoves = [
+            {
+                name: "Flame Burst",
+                type: "Fire",
+                power: 22
+            },
+
+            {
+                name: "Bite",
+                type: "Normal",
+                power: 16
+            },
+
+            {
+                name: "Inferno Blast",
+                type: "Fire",
+                power: 30
+            }
+        ];
+
+        const move =
+            enemyMoves[randomInt(0, enemyMoves.length - 1)];
+
+        let damage =
+            move.power + randomInt(-4, 4);
+
+        const effectiveness =
+            getEffectiveness(move.type, player.type);
+
+        damage = Math.floor(damage * effectiveness);
+
+        player.hp -= damage;
+
+        if (player.hp < 0) {
+            player.hp = 0;
+        }
+
+        animateHit("playerMonster");
+
+        let message =
+            `${enemy.name} used <b>${move.name}</b> (${move.type}) and dealt ${damage} damage.`;
+
+        if (effectiveness > 1) {
+            message += "<br><b>It's super effective.</b>";
+        }
+
+        if (effectiveness < 1) {
+            message += "<br><b>It's not very effective.</b>";
+        }
+
+        log.innerHTML += "<br><br>" + message;
+
+        updateUI();
+
+        if (player.hp <= 0) {
+            endGame("You lost the battle.");
+        }
+    }
+
+    function renderMoveButtons() {
+        const buttonsContainer =
+            document.querySelector(".buttons");
+
+        buttonsContainer.innerHTML = "";
+
+        playerMoves.forEach((move, index) => {
+            const button =
+                document.createElement("button");
+
+            button.textContent =
+                `${move.name} (${move.type})`;
+
+            button.onclick = () =>
+                playerAttack(index);
+
+            buttonsContainer.appendChild(button);
+        });
+
+        const healButton =
+            document.createElement("button");
+
+        healButton.textContent = "Heal";
+
+        healButton.onclick = healPlayer;
+
+        buttonsContainer.appendChild(healButton);
+    }
+
+    function healPlayer() {
+        if (player.hp <= 0 || enemy.hp <= 0) return;
+
+        const amount = randomInt(18, 30);
+
+        player.hp += amount;
+
+        if (player.hp > player.maxHp) {
+            player.hp = player.maxHp;
+        }
+
+        log.innerHTML =
+            `${player.name} restored ${amount} HP.`;
+
+        updateUI();
+
+        setTimeout(enemyTurn, 900);
+    }
+
+    function updateUI() {
+        const playerPercent =
+            (player.hp / player.maxHp) * 100;
+
+        const enemyPercent =
+            (enemy.hp / enemy.maxHp) * 100;
+
+        document.getElementById("playerHpBar").style.width =
+            playerPercent + "%";
+
+        document.getElementById("enemyHpBar").style.width =
+            enemyPercent + "%";
+
+        document.getElementById("playerHpText").textContent =
+            `${player.hp} / ${player.maxHp}`;
+
+        document.getElementById("enemyHpText").textContent =
+            `${enemy.hp} / ${enemy.maxHp}`;
+
+        updateBarColor("playerHpBar", playerPercent);
+        updateBarColor("enemyHpBar", enemyPercent);
+    }
+
+    function updateBarColor(id, percent) {
+        const bar = document.getElementById(id);
+
+        if (percent > 50) {
+            bar.style.background = "#4cd964";
+        }
+        else if (percent > 20) {
+            bar.style.background = "#f7c948";
+        }
+        else {
+            bar.style.background = "#ff4d4d";
+        }
+    }
+
+    function animateHit(id) {
+        const element = document.getElementById(id);
+
+        element.classList.add("shake");
+
+        setTimeout(() => {
+            element.classList.remove("shake");
+        }, 300);
+    }
+
+    function endGame(message) {
+        log.innerHTML += `<br><br><b>${message}</b>`;
+
+        document.querySelectorAll("button")
+            .forEach(btn => {
+                btn.disabled = true;
+            });
+    }
+
+    function randomInt(min, max) {
+        return Math.floor(
+            Math.random() * (max - min + 1)
+        ) + min;
+    }
+
+    renderMoveButtons();
+    updateUI();
+</script>
+
+</body>
+</html>
